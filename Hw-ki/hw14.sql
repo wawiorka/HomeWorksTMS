@@ -40,7 +40,7 @@ UPDATE employees SET hire_date = '2025-01-28' WHERE department IN ('Sales', 'IT'
 SELECT name FROM employees WHERE position = 'Manager';
 
 --● 7Найдите всех сотрудников, у которых зарплата больше 5000 долларов.
-SELECT name FROM employees WHERE salary > 5000;
+SELECT * FROM employees WHERE salary > 5000;
 
 --● 8Найдите всех сотрудников, которые работают в отделе "Sales".
 SELECT name FROM employees WHERE department = 'Sales';

@@ -120,9 +120,11 @@ def add_event(title, date):
         cur.execute("INSERT INTO events (title, date) VALUES (%s, %s)", (title, date,))
 
 
-def add_in_events_plases(id):
+def add_in_events_plases(title):
     with connect_db() as conn, conn.cursor() as cur:
-        cur.execute("INSERT INTO events_plases (event_id) VALUES (%s)", [(id,)])
+        cur.execute("SELECT id FROM events WHERE title ILIKE %s;", [(title,)])
+        new_id = cur.fetchall()
+        cur.execute("INSERT INTO events_plases (event_id) VALUES (%s)", (new_id[0],))
 
 
 def add_plase(name):

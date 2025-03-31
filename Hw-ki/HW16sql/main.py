@@ -78,6 +78,7 @@ def app():
                 date = input("Введите дату мероприятия: ")
                 try:
                     db.add_event(title, date)
+                    db.add_in_events_plases(title)
                     print("Мероприятие добавлено.")
                 except Exception as e:
                     print(f"Что-то пошло не так! {e}")

@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 
 @app.route('/', methods=['GET'])
-def ping():
+def ping():                                       
     return jsonify({'сообщение': 'Сервер Сервиса Резервирования Билетов готов к работе!'}), HTTPStatus.OK
 
 
@@ -15,14 +15,6 @@ def ping():
 def get_events():
     events = db.get_events()
     return jsonify({'Мероприятия': events}), HTTPStatus.OK
-
-
-@app.route('/plases2', methods=['GET']) # ?????????????????????????????
-def get_plases2():
-    plases = db.get_plases2()
-    return plases
-    # for plase in plases:
-    #     return f"ID {plase[0]} - {plase[1]}"
 
 
 @app.route('/plases', methods=['GET'])
@@ -94,7 +86,7 @@ def update_event(id):
     return jsonify({'Сообщение': 'Дата мероприятия изменена'}), HTTPStatus.OK
 
 
-@app.route('/events/hard/<int:id>', methods=['DELETE'])  # ?????????????????
+@app.route('/events/hard/<int:id>', methods=['DELETE'])  
 def hard_delete_event(id):
     if id is None or id <= 0:
         return jsonify({'Ошибка': 'Invalid id'}), HTTPStatus.BAD_REQUEST   

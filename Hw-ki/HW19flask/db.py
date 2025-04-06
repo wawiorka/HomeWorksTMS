@@ -67,13 +67,6 @@ def get_events():
         return events
     
 
-def get_plases2():  # ??????????????????????????????????????????????????
-    with connect_db() as conn, conn.cursor() as cur:
-        cur.execute("SELECT * FROM plases")
-        plases = cur.fetchall()
-        return plases
-    
-
 def get_plases():
     with connect_db() as conn, conn.cursor() as cur:
         cur.execute("SELECT * FROM plases")
@@ -109,7 +102,7 @@ def update_event(date, id):
 
 def hard_delete_event(id):
     with connect_db() as conn, conn.cursor() as cur:
-        cur.executemany("DELETE FROM events WHERE id = %s", (id,))
+        cur.execute("DELETE FROM events WHERE id = %s", (id,))
 
 
 def delete_event(id):

@@ -16,24 +16,24 @@ class Event(Base):
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime)
     deleted_at = Column(DateTime, default=None)
-    plases = relationship("EventPlase", back_populates="event", cascade="all, delete") 
+    places = relationship("EventPlace", back_populates="event", cascade="all, delete") 
     tickets = relationship("Ticket", back_populates="event", cascade="all, delete")
 
 
-class Plase(Base):
-    __tablename__ = "plases"
+class Place(Base):
+    __tablename__ = "places"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), unique=True, nullable=False)
-    events = relationship("EventPlase", back_populates="plase", cascade="all, delete")
+    events = relationship("EventPlace", back_populates="place", cascade="all, delete")
 
 
-class EventPlase(Base):
-    __tablename__ = "events_plases"
+class EventPlace(Base):
+    __tablename__ = "events_places"
     id = Column(Integer, primary_key=True, index=True)
     event_id = Column(Integer, ForeignKey("events.id", ondelete="CASCADE"))
-    plase_id = Column(Integer, ForeignKey("plases.id", ondelete="CASCADE"))
-    event = relationship("Event", back_populates="plases")
-    plase = relationship("Plase", back_populates="events")
+    place_id = Column(Integer, ForeignKey("places.id", ondelete="CASCADE"))
+    event = relationship("Event", back_populates="places")
+    place = relationship("Place", back_populates="events")
 
 
 class Ticket(Base):
@@ -41,8 +41,8 @@ class Ticket(Base):
     id = Column(Integer, primary_key=True, index=True)
     buyer = Column(String(20), nullable=True)
     event_id = Column(Integer, ForeignKey("events.id", ondelete="CASCADE"))
-    created_at = Column(DateTime, default=func.now())
-    deleted_at = Column(DateTime, default=None)
+    bought_at = Column(DateTime, default=func.now())
+    returned_at = Column(DateTime, default=None)
     event = relationship("Event", back_populates="tickets")
 
 
@@ -64,33 +64,33 @@ def get_events():
         return events
 
 
-def get_plases():
+def get_places():
     with SessionLocal() as session:
-        plases_db = session.query(Plase).all()
-        plases = list()
-        for plase in plases_db:
-            plases.append({
-                "id": plase .id,
-                "name": plase.name,
+        places_db = session.query(Place).all()
+        places = list()
+        for place in places_db:
+            places.append({
+                "id": place .id,
+                "name": place.name,
             })
-        return plases
+        return places
     
 
-# def get_plases_events():
+# def get_places_events():
 #     with SessionLocal() as session:
-#         plases_ev_db = session.query(EventPlase.id, Plase.name, Plase.id, Event.title, Event.date)\
-#                 .join(Plase, Plase.id == EventPlase.plase_id) \
-#                     .join(Event, Event.id == EventPlase.event_id).all()
-#         plases_ev = list()
-#         for pl_ev in plases_ev_db:
-#             plases_ev.append({
+#         places_ev_db = session.query(EventPlace.id, Place.name, Place.id, Event.title, Event.date)\
+#                 .join(Place, Place.id == EventPlace.place_id) \
+#                     .join(Event, Event.id == EventPlace.event_id).all()
+#         places_ev = list()
+#         for pl_ev in places_ev_db:
+#             places_ev.append({
 #                 "id": pl_ev.id,
 #                 "name": pl_ev.name,
-#                 "plase_id": pl_ev.id,
+#                 "place_id": pl_ev.id,
 #                 "title": pl_ev.title,
 #                 "date": pl_ev.date,
 #             })
-#         return plases_ev
+#         return places_ev
 
 
 def add_event(title, date):
@@ -100,10 +100,10 @@ def add_event(title, date):
         session.commit()
 
         
-def add_in_events_plases(title):
+def add_in_events_places(title):
     with SessionLocal() as session:
         new_id = session.query(Event.id).filter(Event.title == title).first()
-        new_ev_pl = EventPlase(event_id = new_id[0], plase_id = None)
+        new_ev_pl = EventPlace(event_id = new_id[0], place_id = None)
         session.add(new_ev_pl)
         session.commit()
     
@@ -134,7 +134,7 @@ def reserv_ticket(buyer, event_id):
 def return_ticket(id):
     with SessionLocal() as session:
         del_ticket = session.query(Ticket).filter(Ticket.id == id).first()
-        del_ticket.deleted_at = func.now()
+        del_ticket.returned_at = func.now()
         session.add(del_ticket)
         session.commit()  
         
@@ -142,7 +142,7 @@ def return_ticket(id):
 def get_tickets():
     with SessionLocal() as session:
         tickets_info_db = session.query(Ticket.id, Ticket.buyer, Event.title, Event.date) \
-            .join(Event, Event.id == Ticket.event_id).filter(Ticket.deleted_at == None).all()
+            .join(Event, Event.id == Ticket.event_id).filter(Ticket.returned_at == None).all()
         tickets_info = list()
         for ticket in tickets_info_db:
             tickets_info.append({
@@ -164,17 +164,17 @@ def get_num_tickets(id):
         }
 
 
-def add_plase(name):
+def add_place(name):
     with SessionLocal() as session:
-        plase = Plase(name = name)
-        session.add(plase)
+        place = Place(name = name)
+        session.add(place)
         session.commit()
 
 
-def update_plase(plase_id, event_id):
+def update_place(place_id, event_id):
     with SessionLocal() as session:
-        update = session.query(EventPlase).filter(EventPlase.event_id == event_id).first()
-        update.plase_id = plase_id
+        update = session.query(EventPlace).filter(EventPlace.event_id == event_id).first()
+        update.place_id = place_id
         session.commit()
 
 def search_events(query):

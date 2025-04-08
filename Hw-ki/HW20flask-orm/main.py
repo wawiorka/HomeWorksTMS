@@ -15,20 +15,20 @@ def ping():
 @app.route('/events', methods=['GET'])
 def get_events():
     events = db.get_events()
-    return jsonify({'Мероприятия': events}), HTTPStatus.OK
+    return jsonify({'Events': events}), HTTPStatus.OK
 
 
-@app.route('/plases', methods=['GET'])
-def get_plases():
-    plases = db.get_plases()
-    return jsonify({'Места': plases}), HTTPStatus.OK
+@app.route('/places', methods=['GET'])
+def get_plaсes():
+    places = db.get_plaсes()
+    return jsonify({'Places': places}), HTTPStatus.OK
 
 
-# @app.route('/plases_events', methods=['GET'])
-# def get_plases_events():
-#     plases_ev = db.get_plases_events()
-#     return jsonify({plases_ev}), HTTPStatus.OK
-        
+# @app.route('/places_events', methods=['GET'])
+# def get_places_events():
+#     places_ev = db.get_places_events()
+#     return jsonify({places_ev}), HTTPStatus.OK
+
 
 @app.route('/events', methods=['POST'])
 def add_event():
@@ -44,8 +44,8 @@ def add_event():
 
     try:
         db.add_event(event['title'], event['date'])
-        db.add_in_events_plases(event['title'])  # добавление в EventPlase (Plase = None)
-        return jsonify({'message': 'Мероприятие добавлено, в т.ч. в events_plases'}), HTTPStatus.CREATED
+        db.add_in_events_places(event['title']) 
+        return jsonify({'message': 'Мероприятие добавлено, в т.ч. в events_places'}), HTTPStatus.CREATED
     except Exception as e:
         print(f"Что-то пошло не так! {e}")
                 
@@ -87,8 +87,8 @@ def search_events(query):
     return jsonify(events), HTTPStatus.OK
             
 
-@app.route('/events_plases', methods=['PUT'])
-def update_events_plases():
+@app.route('/events_places', methods=['PUT'])
+def update_events_places():
     try:
         event = request.get_json()
     except Exception as e:
@@ -97,7 +97,7 @@ def update_events_plases():
     if event is None:
         return jsonify({'error': 'body is required'}), HTTPStatus.BAD_REQUEST
 
-    db.update_plase(event['plase_id'], event['event_id'])
+    db.update_place(event['place_id'], event['event_id'])
 
     return jsonify({'message': 'Информация о месте проведения мероприятия обновлена'}), HTTPStatus.OK
 

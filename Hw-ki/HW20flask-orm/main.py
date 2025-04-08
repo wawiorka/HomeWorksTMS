@@ -131,7 +131,7 @@ def return_ticket(id):
 @app.route('/tickets', methods=['GET'])
 def get_tickets():
     tickets_info = db.get_tickets()
-    return jsonify({'Продано билетов': tickets_info}), HTTPStatus.OK
+    return jsonify({'Tickets were sold': tickets_info}), HTTPStatus.OK
     
 
 def main():

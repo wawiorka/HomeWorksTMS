@@ -5,13 +5,13 @@ VALUES
 ('Algorhythm: Конкурс алгоритмических решений', '2025-05-16');
 
 
-INSERT INTO plases (name)
+INSERT INTO plaсes (name)
 VALUES
 ('Малый зал кинотеатра'),
 ('Концертный зал'),
 ('Конференц-холл главной арены');
 
-INSERT INTO events_plases (event_id, plase_id)
+INSERT INTO events_plaсes (event_id, plaсe_id)
                 VALUES
                 (1, 3),
                 (2, 1),
@@ -19,8 +19,8 @@ INSERT INTO events_plases (event_id, plase_id)
 
 
 DROP TABLE events;
-DROP TABLE plases;
-DROP TABLE events_plases;
+DROP TABLE plaсes;
+DROP TABLE events_plaсes;
 DROP TABLE  tickets;
 
 DELETE FROM events WHERE id = 5;

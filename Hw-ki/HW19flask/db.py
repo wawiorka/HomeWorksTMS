@@ -85,6 +85,13 @@ def add_event(title, date):
         cur.execute("INSERT INTO events (title, date) VALUES (%s, %s)", (title, date,))
 
 
+def add_in_events_plases(title):
+    with connect_db() as conn, conn.cursor() as cur:
+        cur.execute("SELECT id FROM events WHERE title ILIKE %s;", [(title,)])
+        new_id = cur.fetchall()
+        cur.execute("INSERT INTO events_plases (event_id) VALUES (%s)", (new_id[0],))
+
+
 def reserv_ticket(buyer, event_id):
     with connect_db() as conn, conn.cursor() as cur:
         cur.execute("INSERT INTO tickets (buyer, event_id) VALUES (%s, %s)", (buyer, event_id,))
@@ -108,3 +115,32 @@ def hard_delete_event(id):
 def delete_event(id):
     with connect_db() as conn, conn.cursor() as cur:
         cur.execute("UPDATE events SET deleted_at = CURRENT_TIMESTAMP WHERE id = %s;", (id,))
+
+def get_plases_events():
+    with connect_db() as conn, conn.cursor() as cur:
+        cur.execute("""SELECT p.name, p.id, e.title, e.date
+                        FROM events_plases AS e_p
+                        JOIN plases AS p ON p.id = e_p.plase_id
+                        JOIN events AS e ON e.id = e_p.event_id;""")
+        pl_ev = cur.fetchall()
+        plases_ev = {}
+        n = 1
+        for p_e in pl_ev:
+            plases_ev[n] =  {
+                    "name": p_e[0],
+                    "id": p_e[1],
+                   "title": p_e[2],
+                   "date": p_e[3],
+            }
+            n += 1
+        return plases_ev
+    
+
+def search_events(query):
+    with connect_db() as conn, conn.cursor() as cur:
+        cur.execute("SELECT * FROM events WHERE title ILIKE %s;", (f"%{query}%",))
+        events = cur.fetchall()
+        return events
+    
+
+    

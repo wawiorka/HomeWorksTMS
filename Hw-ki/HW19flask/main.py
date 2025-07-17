@@ -36,8 +36,9 @@ def add_event():
         return jsonify({'Ошибка': 'title is required'}), HTTPStatus.BAD_REQUEST
 
     db.add_event(event['title'], event['date'])
+    db.add_in_events_plases(event['title'])
 
-    return jsonify({'Сообщение': 'Мероприятие добавлено'}), HTTPStatus.CREATED
+    return jsonify({'Сообщение': 'Мероприятие добавлено, в т.ч. в events_plases'}), HTTPStatus.CREATED
 
 
 @app.route('/tickets', methods=['POST'])
@@ -102,6 +103,26 @@ def delete_event(id):
      
     db.delete_event(id)
     return jsonify({'Сообщение': 'Мероприятие удалено'}), HTTPStatus.OK 
+
+
+@app.route('/plases_events', methods=['GET'])
+def get_plases_events():
+    plases_ev = db.get_plases_events()
+    return jsonify(plases_ev), HTTPStatus.OK
+
+
+@app.route('/events/search/<str:query>', methods=['GET'])
+def search_events(query):
+    # try:
+    #     query = request.get_json()
+    # except Exception as e:
+    #     return jsonify({'Ошибка': f"error during reading request body: {e}"}), HTTPStatus.BAD_REQUEST
+    
+    # if query is None:
+    #     return jsonify({'Ошибка': 'body is required'}), HTTPStatus.BAD_REQUEST
+
+    events = db.search_events(query)
+    return jsonify(events), HTTPStatus.OK
 
 
 def main():
